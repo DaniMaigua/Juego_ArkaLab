@@ -1,11 +1,10 @@
 import pygame
-
 # constantes del tamaño de la ventana
-ANCHO = 800
-ALTO = 600
+ANCHO = 700
+ALTO = 750
 
 # constante nombre de la ventana
-NOMBRE_JUEGO = "Rompebloques Metalizados" 
+NOMBRE_JUEGO = "ArkaLab"
 
 # constante icono de la ventana
 ICONO = pygame.image.load("assets/logo.png") 
@@ -14,3 +13,28 @@ ICONO = pygame.image.load("assets/logo.png")
 ANCHO_PERSONAJE = 50
 ALTO_PERSONAJE = 50
 COLOR_PERSONAJE = (255, 255, 0)
+
+
+# carpeta donde estan los bloques elementos
+RUTA_IMAGENES_ELEMENTOS = "Assets/Elementos"  
+
+# contantes de tamaño de bloque
+ANCHO_BLOQUE = 60
+ALTO_BLOQUE = 60
+
+# contantes de tamaño matriz de bloque
+COLUMNAS = 8
+FILAS = 5
+ESPACIO = 7
+
+# constante de tamaño de palera
+PALETA = pygame.Rect(100, 650, 120, 25)
+VELOCIDAD_PALETA = 6
+
+# constante colores
+COLOR_PALETA = (100, 100, 200)
+AZUL_MARINO = (0, 0, 128)
+
+
+# PRIMERO definimos caracteristicas de la pelota
+TAMANIO_PELOTA = 30
