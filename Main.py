@@ -47,6 +47,7 @@ import random
 import os
 
 from Main_intro import *
+from power_ups import aplicar_powerups
 
 # from bloques import pared_bloques
 
@@ -61,7 +62,7 @@ ANCHO, ALTO = 700, 750 # constantes del tamaño de la ventana
 ventana = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("ArkaLab") # constante nombre de la ventana
 
-fondo = pygame.image.load("Assets/Fondo/fondo_700_x_750_opaco.png").convert()
+fondo = pygame.image.load("Assets/Fondo/fondo_nivel1 - copia.png").convert()
 
 puntuacion_jugador = 0
 
@@ -90,6 +91,7 @@ FILAS = 5
 ESPACIO = 7
 
 bloques = []
+# powerups = []
 
 def crear_bloques():
     bloques.clear()
@@ -112,9 +114,10 @@ def crear_bloques():
 
             bloques.append({
                 "rect": rect,
-                "img": img
+                "img": img,
+                "powerup": random.choice([None, "H", "C", "O", "Na"])
             })
-
+            # powerup = sumamos la condicion que al azar    
             # bloque = pygame.Rect(x, y, ANCHO_BLOQUE, ALTO_BLOQUE)
             # bloques.append(bloque)
 
@@ -141,7 +144,7 @@ crear_bloques()
 
 #definicion de forma de la paleta (es un rectangulo en este caso)
 PALETA = pygame.Rect(100, 650, 120, 25)
-VELOCIDAD_PALETA = 6
+VELOCIDAD_PALETA = 5
 COLOR_PALETA = (100, 100, 200)
 
 # =================================================================================
@@ -151,6 +154,7 @@ COLOR_PALETA = (100, 100, 200)
 # PRIMERO definimos caracteristicas de la pelota
 TAMANIO_PELOTA = 30
 pelota = pygame.Rect((ANCHO // 3) - (TAMANIO_PELOTA // 2), (ALTO // 2) - (TAMANIO_PELOTA //2), TAMANIO_PELOTA, TAMANIO_PELOTA)
+color_pelota = {"valor": (100, 100, 200)}
 
 #ejes de movimiento de la pelota
 velocidad_pelota_x = 5 * random.choice([1, -1]) #ESTE VALOR RANDOM = puede quedar en 5 o - 5
@@ -175,9 +179,12 @@ while corriendo:
 
     if keys[pygame.K_d] and PALETA.right < ANCHO:
         PALETA.x += VELOCIDAD_PALETA
+    if keys[pygame.K_RIGHT] and PALETA.right < ANCHO:
+        PALETA.x += VELOCIDAD_PALETA 
     if keys[pygame.K_a] and PALETA.left > 0:
         PALETA.x -= VELOCIDAD_PALETA
-
+    if keys[pygame.K_LEFT] and PALETA.left > 0:
+        PALETA.x -= VELOCIDAD_PALETA
 
     pelota.x += velocidad_pelota_x
     pelota.y += velocidad_pelota_y
@@ -194,7 +201,7 @@ while corriendo:
     # COLISIONES
     if pelota.colliderect(PALETA):
         velocidad_pelota_y *= -1
-        velocidad_pelota_x *= -1 #-> ver como funciona
+                                    #velocidad_pelota_x *= -1 #-> ver como funciona
 
     #CONTEO DE PUNTOS
     if pelota.bottom >= ALTO:
@@ -219,12 +226,37 @@ while corriendo:
     # --------------------------
     # COLISIONES CON BLOQUES
     # --------------------------
-    for bloque in bloques[:]:
-        if pelota.colliderect(bloque["rect"]):
-            bloques.remove(bloque)
-            velocidad_pelota_y *= -1
-            puntuacion_jugador += 5
-            break
+    
+    def colisionar_pelota_bloque(bloques):
+        global velocidad_pelota_y, velocidad_pelota_x, puntuacion_jugador
+        for bloque in bloques[:]:
+            if pelota.colliderect(bloque["rect"]):
+                bloques.remove(bloque)
+                if bloque["powerup"] is not None:
+                    aplicar_powerups(bloque["powerup"], PALETA, velocidad_pelota_x, velocidad_pelota_y, color_pelota)  #Activa el powerup aleatoriamente al colisionar
+                if abs(pelota.bottom -bloque["rect"].top) < 10 and velocidad_pelota_y > 0:
+                    velocidad_pelota_y *= -1
+                elif abs(pelota.top -bloque["rect"].bottom) < 10 and velocidad_pelota_y < 0:    # funcion Abs para que rebote mas dinamicamente
+                    velocidad_pelota_y *= -1
+                elif abs(pelota.right - bloque["rect"].left) < 10 and velocidad_pelota_x > 0:
+                    velocidad_pelota_x *= -1
+                elif abs(pelota.left - bloque["rect"].right) < 10 and velocidad_pelota_x < 0:
+                    velocidad_pelota_x *= -1
+                else:
+                    velocidad_pelota_x *= -1    #En caso de que no se pueda detectar cual es el punto de colision, vuelve en sentido contrario
+                    velocidad_pelota_y *= -1
+
+                global puntuacion_jugador
+                puntuacion_jugador += 5
+                break
+
+
+
+   
+
+    colisionar_pelota_bloque(bloques)
+   # actualizar_powerups(ventana, powerups, PALETA, velocidad_pelota_x, velocidad_pelota_y)
+             
 
     # --------------------------
     # FONDO DE PANTALLA
@@ -234,8 +266,10 @@ while corriendo:
     # ventana.fill((0, 0, 0))
     #creacion del rectangulo (ubicacion, color, objeto -> un rectangulo)
     pygame.draw.rect(ventana,COLOR_PALETA, PALETA)
+    pygame.draw.rect(ventana, (0, 0, 0), PALETA, 1) # Borde de la paleta
     #LUEGO dibujamos la pelota
-    pygame.draw.ellipse(ventana, COLOR_PALETA, pelota)
+    pygame.draw.ellipse(ventana, color_pelota["valor"], pelota)
+    pygame.draw.ellipse(ventana, (0, 0, 0), pelota, 1) # Borde de la pelota
     # Dibujar bloques
     # for bloque in bloques:
     #     pygame.draw.rect(ventana, (200, 60, 60), bloque)

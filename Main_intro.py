@@ -16,7 +16,7 @@ fuente = pygame.font.Font(None, 15)
 
 
 # Cargar sonido
-sonido_hover = pygame.mixer.Sound("hover.mp3")
+sonido_hover = pygame.mixer.Sound("Assets/Elementos/hover.mp3")
 
 # Botones: texto, rectángulo, y estado de hover previo (para controlar el sonido)
 botones = [
