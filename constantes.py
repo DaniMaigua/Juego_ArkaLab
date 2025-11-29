@@ -28,7 +28,10 @@ FILAS = 5
 ESPACIO = 7
 
 # constante de tamaño de palera
-PALETA = pygame.Rect(100, 650, 120, 25)
+ALTO_PALETA = 25
+LARGO_PALETA = 120
+# PALETA = pygame.Rect(100, 650, LARGO_PALETA, ALTO)
+PALETA = pygame.Rect(290, 680, LARGO_PALETA, 25)
 VELOCIDAD_PALETA = 6
 
 # constante colores

@@ -1,8 +1,6 @@
-
 import pygame # importamos la libreria. Primero la debemos instalar
-
 import random
-import os
+# import os
 
 # from menu import *
 from constantes import *
@@ -13,55 +11,64 @@ from constantes import *
 pygame.init()
 
 
+# ============================================================
+# FUNCIÓN PRINCIPAL DEL JUEGO
+# ============================================================
 def iniciar_juego():
+
+    # --------------------------
+    # VARIABLES DEL JUEGO
+    # --------------------------
     velocidad_pelota_x = 5
     velocidad_pelota_y = -5
     puntuacion_jugador = 0
+    pelota_en_movimiento = False
+    vidas = 3
 
     #IMPORTANTE: sin toda la logica de abajo se abrira y se cerrara rapidamente
     ventana = pygame.display.set_mode((ANCHO, ALTO))
     pygame.display.set_caption("ArkaLab") # constante nombre de la ventana
 
-    fondo = pygame.image.load("Assets/Fondo/fondo_700_x_750_opaco.png").convert()
-
+    fondo = pygame.image.load("Assets/Fondo/Fondo_pygame.png").convert()
 
     # =================================================================================
     # PARED BLOQUES
     # =================================================================================
 
+    # Diccionario de bloques -> util para power ups
+    imagenes_bloques = {
+        "Na": pygame.image.load("Assets/Elementos/Celeste/celeste_alcalino_hidrogeno.png"),
+        "H": pygame.image.load("Assets/Elementos/Celeste/celeste_alcalino_sodio.png"),
+        "B": pygame.image.load("Assets/Elementos/Amarillo/amarillo_metaloide_boro-22.png"),
+        "Si": pygame.image.load("Assets/Elementos/Amarillo/amarillo_metaloide_silicio-23.png"),
+        "P": pygame.image.load("Assets/Elementos/Azul/azul_lantanido_fosforo-20.png"),
+        "Th": pygame.image.load("Assets/Elementos/Naranja/naranja_actinido_torio-14.png"),
+        "U": pygame.image.load("Assets/Elementos/Naranja/naranja_actinido_uranio-15.png"),
+        "He": pygame.image.load("Assets/Elementos/Rosa/rosa_gas_noble_helio-17.png"),
+        "Ne": pygame.image.load("Assets/Elementos/Rosa/rosa_gas_noble_neon-18.png"),
+        "Kr": pygame.image.load("Assets/Elementos/Rosa/rosa_gas_noble_kripton-19.png"),
+        "Ce": pygame.image.load("Assets/Elementos/Verde_Agua/verde_agua_nometal_cerio-16.png"),
+        "Cr": pygame.image.load("Assets/Elementos/Violeta/violeta_metal_transicional_cromo-11.png"),
+        "Fe": pygame.image.load("Assets/Elementos/Violeta/violeta_metal_transicional_hierro-12.png"),
+        "Mt": pygame.image.load("Assets/Elementos/Violeta/violeta_metal_transicional_meitnerio-13.png"),
+        "Ti": pygame.image.load("Assets/Elementos/Violeta/violeta_metal_transicional_titanio-10.png"),
+    }
 
     imagenes_bloques = [
-        pygame.image.load(os.path.join(RUTA_IMAGENES_ELEMENTOS, "bloque1_sodio.png")),
-        pygame.image.load(os.path.join(RUTA_IMAGENES_ELEMENTOS, "bloque2_hidrogeno.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Amarillo" , "amarillo_metaloide_boro-22.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Amarillo" , "amarillo_metaloide_silicio-23.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Azul" , "azul_lantanido_fosforo-20.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Naranja" , "naranja_actinido_torio-14.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Naranja" , "naranja_actinido_uranio-15.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Rosa" , "rosa_gas_noble_helio-17.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Rosa" , "rosa_gas_noble_neon-18.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Rosa" , "rosa_gas_noble_kripton-19.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Verde_Agua" , "verde_agua_nometal_cerio-16.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Violeta" , "violeta_metal_transicional_cromo-11.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Violeta" , "violeta_metal_transicional_hierro-12.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Violeta" , "violeta_metal_transicional_meitnerio-13.png")),
-        pygame.image.load(os.path.join("Assets/Elementos/Violeta" , "violeta_metal_transicional_titanio-10.png"))
+        pygame.transform.scale(imagenes_bloques[img_key],(ANCHO_BLOQUE, ALTO_BLOQUE))
+        for img_key in imagenes_bloques
     ]
-
-
-    imagenes_bloques = [
-        pygame.transform.scale(img,(ANCHO_BLOQUE, ALTO_BLOQUE))
-        for img in imagenes_bloques
-    ]
-
 
     bloques = []
 
+    # ------------------------------------------------------
+    # FUNCIÓN PARA CREAR LA MATRIZ DE BLOQUES
+    # ------------------------------------------------------
     def crear_bloques():
         bloques.clear()
 
         ancho_matriz_bloques = COLUMNAS * (ANCHO_BLOQUE + ESPACIO) - ESPACIO
-        offset_x = (ANCHO - ancho_matriz_bloques) // 2
+        offset_x = (ANCHO - ancho_matriz_bloques) // 2 #centrarlo segun tamaño matriz
         offset_y = 150  # BAJAR LOS BLOQUES
 
         for fila in range(FILAS):
@@ -87,90 +94,44 @@ def iniciar_juego():
     # PELOTA
     # =================================================================================
 
-    # # PRIMERO definimos caracteristicas de la pelota
-    pelota = pygame.Rect((ANCHO // 3) - (TAMANIO_PELOTA // 2), (ALTO // 3) - (TAMANIO_PELOTA //2), TAMANIO_PELOTA, TAMANIO_PELOTA)
-
-    #ejes de movimiento de la pelota
-    velocidad_pelota_x = 5 * random.choice([1, -1]) #ESTE VALOR RANDOM = puede quedar en 5 o - 5
-    velocidad_pelota_y = 5 * random.choice([1, -1])
-
+    # Tu comentario intacto
+    pelota = pygame.Rect (PALETA.centerx - (TAMANIO_PELOTA // 2), PALETA.top - (TAMANIO_PELOTA -5), TAMANIO_PELOTA, TAMANIO_PELOTA)
 
     # =================================================================================
     # PANTALLA
     # =================================================================================
 
-    fuente = pygame.font.Font(None, 50)
-
+    FUENTE = pygame.font.Font(None, 50)
     corriendo = True
 
-    #CONTEO DE VIDAS 
-    vidas = 3
-    while corriendo:
 
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT: #APRETAR LA X
-                corriendo = False
+    # ============================================================
+    # FUNCIÓN: PERDER VIDAS
+    # ============================================================
+    def reiniciar_juego():
 
-    #se supone remplaza lo de arriba, ya que tiene en cuenta el movimiento de teclas
-        keys = pygame.key.get_pressed()
-
-        if keys[pygame.K_d] and PALETA.right < ANCHO:
-            PALETA.x += VELOCIDAD_PALETA
-        if keys[pygame.K_a] and PALETA.left > 0:
-            PALETA.x -= VELOCIDAD_PALETA
-
-        #SEGUN EL EJE INDICADO, La pelota tomará velocidad
-        pelota.x += velocidad_pelota_x #HACERLOS CONSTANTES
-        pelota.y += velocidad_pelota_y
-
-
-        if pelota.top <= 0:
-            velocidad_pelota_y *= -1 #indica, si la pelota toca el top, que invierta el signo, de positivo a negativo. Como consecuencia, cambiará el sentido de direcciòn. 
-        if pelota.left <= 0 or pelota.right >= ANCHO: 
-            velocidad_pelota_x *= - 1 #SOLO EN EJE X, bordes laterales.
-        
-        #con estas coordenadas agregamos el movimiento
-        # PALETA.x += VELOCIDAD_PALETA
-        # print(VELOCIDAD_PALETA)
-
-        # COLISIONES
-
-        #EREBOTE GENERICO DE PELOTA CON PALETA
-        if pelota.colliderect(PALETA):
-            velocidad_pelota_y *= -1
-            velocidad_pelota_x *= -1 #-> ver como funciona
-
-
-        # PERDER VIDA
-        if pelota.bottom >= ALTO:
-            vidas -= 1
-
-            # Reiniciar pelota
-            pelota.x = (ANCHO // 2) - (TAMANIO_PELOTA // 2)
-            pelota.y = (ALTO // 2) - (TAMANIO_PELOTA // 2)
-            
-            velocidad_pelota_x = 5 * random.choice([1, -1])
-            velocidad_pelota_y = -5  # siempre hacia arriba
-
-        if vidas <= 0:
-            # Reiniciar juego completo
+        if keys[pygame.K_SPACE]:
             vidas = 3
             puntuacion_jugador = 0
+            pelota.x = (ANCHO // 2) - (TAMANIO_PELOTA // 2)
+            pelota.y = 650 - (TAMANIO_PELOTA // 2)
             crear_bloques()
-
-
-        # --------------------------
-        # COLISIONES CON BLOQUES
-        # --------------------------
-        # PONER ESTE CICLO EN UNA FUNCION
-        # UTILIZAR ESTE CICLO PARA DETERMINAR DIVERSAS FUNCIONES DE LA PARED DE BLOQUES
-        # DISTINGUIR BLOQUES Y SU DISTRIBUCION
-
-        # --------------------------
-        # COLISIONES CON BLOQUES
-        # --------------------------
+            return vidas, puntuacion_jugador
         
-        def colisionar_pelota_bloque(bloques, velocidad_pelota_y, puntuacion_jugador):
+
+    def perder_vidas (vidas):# PERDER VIDA
+
+        FUENTE.render(f"Vidas: {vidas}", False, COLOR_PALETA)
+        if pelota.bottom >= ALTO:
+            vidas -= 1
+            # Reiniciar pelota -> IMPORTANTE, COORDENADAS DE POSICION INICIAL DE PELOTA
+            if vidas == 0:
+                FUENTE.render("Game Over", False, COLOR_PALETA)
+                reiniciar_juego()
+        return vidas
+    
+
+    def colisionar_pelota_bloque(bloques, velocidad_pelota_y, puntuacion_jugador):
             for bloque in bloques[:]:
                 if pelota.colliderect(bloque["rect"]):
                     bloques.remove(bloque)
@@ -178,57 +139,110 @@ def iniciar_juego():
                     puntuacion_jugador += 5
                     break
             return puntuacion_jugador
+
+    # ============================================================
+    # BUCLE PRINCIPAL DEL JUEGO (TU PREGUNTA)
+    # Sí: este es EL WHILE PRINCIPAL
+    # ============================================================
+    while corriendo:
+
+        # --------------------------
+        # EVENTOS
+        # --------------------------
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT: #APRETAR LA X
+                corriendo = False
+
+            if event.type == pygame.KEYDOWN: #presionar tecla
+                if event.key == pygame.K_SPACE and not pelota_en_movimiento:
+
+
+                        # Reubicar pelota siempre encima de la paleta antes de soltarla
+                    pelota.x = PALETA.centerx - TAMANIO_PELOTA // 2
+                    pelota.y = PALETA.top - TAMANIO_PELOTA - 5
+
+                    velocidad_pelota_x = random.choice([-5, 5])
+                    velocidad_pelota_y = -5  # siempre hacia arriba
+
+                    # # ejes de movimiento de la pelota
+                    # velocidad_pelota_x = 5 #* random.choice([1, -1]) 
+                    # velocidad_pelota_y = -5
+                    pelota_en_movimiento = True
+                    # pelota.x += velocidad_pelota_x * random.choice([-1])
+                    # pelota.y += velocidad_pelota_y * random.choice([1])
+
+            # if event.key == pygame.K_SPACE and not pelota_en_movimiento:
+
+
+    # pelota_en_movimiento = True
+
+
+            # Movimiento de paleta
+            keys = pygame.key.get_pressed() #mantener presionado
+
+            if keys[pygame.K_d] and PALETA.right < ANCHO:
+                PALETA.x += VELOCIDAD_PALETA
+            if keys[pygame.K_a] and PALETA.left > 0:
+                PALETA.x -= VELOCIDAD_PALETA
+
+
+        # ============================================================
+        # COLISIONES CON BORDES
+        # ============================================================
+        if pelota.top <= 0:
+            velocidad_pelota_y *= -1
+        if pelota.left <= 0 or pelota.right >= ANCHO:
+            velocidad_pelota_x *= - 1
+
+        # ============================================================
+        # COLISIONES CON PALETA
+        # ============================================================
+        if pelota.colliderect(PALETA):
+            velocidad_pelota_y *= -1
+            velocidad_pelota_x *= -1 #-> ver como funciona
+
+
+        # ============================================================
+        # FUNCIÓN: REINICIAR JUEGO
+        # ============================================================
+
+        vidas_disponibles = perder_vidas(vidas) #variable
+
+
+        # ============================================================
+        # FUNCIÓN: COLISIÓN PELOTA-BLOQUE
+        # ============================================================
+        
                 
-        colisionar_pelota_bloque(bloques, velocidad_pelota_y, puntuacion_jugador)
-        # --------------------------
-        # FONDO DE PANTALLA
-        # --------------------------
+        puntuacion_jugador = colisionar_pelota_bloque(bloques, velocidad_pelota_y, puntuacion_jugador)
+
+
+        # ============================================================
+        # MOVIMIENTO DE LA PELOTA
+        # ============================================================
+        if pelota_en_movimiento:
+            pelota.x += velocidad_pelota_x
+            pelota.y += velocidad_pelota_y
+
+
+        # ============================================================
+        # DIBUJADO EN PANTALLA
+        # ============================================================
         ventana.blit(fondo, (0, 0))
 
-        #creacion del rectangulo PALETA (ubicacion, color, objeto -> un rectangulo)
         pygame.draw.rect(ventana,COLOR_PALETA, PALETA)
-        #LUEGO dibujamos la pelota
         pygame.draw.ellipse(ventana, COLOR_PALETA, pelota)
-        
-        # Pegar imagen de bloques
+
         for bloque in bloques:
             ventana.blit(bloque["img"], bloque["rect"])
 
-    #DIBUJAMOS BLOQUES POR COLOR
-        # for bloque in bloques:
-        #     color = (200, 60, 60) if bloque["vida"] == 2 else (230, 220, 0)
-        #     pygame.draw.rect(ventana, color, bloque["rect"])
+        puntuacion_texto = FUENTE.render(f"{puntuacion_jugador}", False, COLOR_PALETA)
+        ventana.blit(puntuacion_texto, (50,50))
 
-        # --------------------------
-        # GAME OVER
-        # --------------------------   
-        puntuacion_vidas = fuente.render(f"Vidas: {vidas}", False, COLOR_PALETA)
-        if vidas == 0:
-            puntuacion_vidas = fuente.render("Game Over", False, COLOR_PALETA)
-        ventana.blit(puntuacion_vidas, (500,50)) #lo bliteamos, osea pegamos el texto
+        vidas_texto = FUENTE.render(f"{vidas_disponibles}", False, COLOR_PALETA)
+        ventana.blit(vidas_texto, (500,50))
 
-        puntuacion_texto = fuente.render(f"{puntuacion_jugador}", False, COLOR_PALETA)
-        ventana.blit(puntuacion_texto, (50,50)) #lo bliteamos, osea pegamos el texto
-
-
-
-        # --------------------------
-        # PUNTUACION TEXTO
-        # --------------------------  
-        puntuacion_texto = fuente.render(f"{puntuacion_jugador}", False, COLOR_PALETA)
-        ventana.blit(puntuacion_texto, (50,50)) #lo bliteamos, osea pegamos el texto
-
-
-    # # se va actualizando la pantalla
-        # pygame.display.update() --> funcion parecida a .flip
-        #  dos funciones  que actualizan la pantalla,  diferencias sutiles: flip() actualiza toda la superficie de la pantalla, mientras que update() puede actualizar toda la pantalla o un área específica si se le pasan parámetros.
-
-        #Actualiza constantemente la pantalla
-        pygame.display.flip() #PODRIA SER TAMBIEN UPDATE
-
-        #RESTRICCION DE FPS
+        pygame.display.flip()
         pygame.time.Clock().tick(60)
-        
 
-    pygame.quit() #para liberar recursos -> VER
-
+    pygame.quit()
