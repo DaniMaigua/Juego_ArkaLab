@@ -7,6 +7,7 @@ from power_ups import * #ver - creo que no importo nada puntual, porque bloques 
 import bloques as bloques_mod
 
 
+
 # # FUENTE = pygame.font.Font(None, 50)
 # FUENTE = None
 
@@ -18,6 +19,11 @@ import bloques as bloques_mod
 def iniciar_juego():
     # de este modo inicializamos pygame
     pygame.init()
+
+    pygame.mixer.init()
+    pygame.mixer.music.load("Assets/Sonidos/sonido_juego.mp3")
+    pygame.mixer.music.play(loops=-1)
+    pygame.mixer.music.set_volume(0.3)
 
     global FUENTE, FUENTE_TITULO, FUENTE_TEXTO
     FUENTE = pygame.font.Font(None, 50)

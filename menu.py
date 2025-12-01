@@ -8,6 +8,10 @@ from juego import iniciar_juego
 
 pygame.init()
 pygame.mixer.init()
+pygame.mixer.music.load("Assets/Sonidos/sonido_inicio.mp3")
+pygame.mixer.music.play(loops=-1)
+pygame.mixer.music.set_volume(0.3)
+    
 
 #constantes convertir 
 ventana = pygame.display.set_mode((ANCHO,ALTO))
@@ -71,6 +75,7 @@ corriendo = True
 
 
 def dibujar_menu():
+
     ventana.blit(fondo_menu, (0, 0))
     ventana.blit(logo_scale, (150, 150))
     ventana.blit(eslogan_scale, (260, 280))
@@ -103,7 +108,6 @@ def dibujar_menu():
 
 while corriendo:
     dibujar_menu()
-    
     
     for evento in pygame.event.get():
         if evento.type == pygame.QUIT:

@@ -3,6 +3,8 @@ import random
 from constantes import *
 from power_ups import aplicar_powerups
 
+# sonido_colision = pygame.mixer.Sound("Assets/Sonidos/sonido_colision_bloque2.mp3")
+# sonido_colision.set_volume(0.5)  # opcional
 
 # =================================================================================
 # PARED BLOQUES
@@ -109,7 +111,16 @@ def crear_bloques(nivel_actual, columnas = 8, filas = 5):
 def colisionar_pelota_bloque(bloques, velocidad_pelota_y, velocidad_pelota_x, puntuacion_jugador, pelota, color_pelota, fondo, nivel_actual):
     for bloque in bloques[:]:
         if pelota.colliderect(bloque["rect"]):
+            sonido_colision = pygame.mixer.Sound("Assets/Sonidos/sonido_colision_bloque2.mp3")
+            sonido_colision.set_volume(0.5)  # opcional
+            sonido_colision.play()
             bloques.remove(bloque)
+            # # pygame.init()
+            # pygame.mixer.init()
+            # pygame.mixer.music.load("Assets/Sonidos/sonido_colision_bloque2.mp3")
+            # # pygame.mixer.music.play(loops=-1)
+            # # pygame.mixer.music.set_volume(0.3)
+
             if bloque["powerup"] is not None:
                 aplicar_powerups(bloque["powerup"], PALETA, velocidad_pelota_x, velocidad_pelota_y, color_pelota)  #Activa el powerup aleatoriamente al colisionar
             if abs(pelota.bottom -bloque["rect"].top) < 10 and velocidad_pelota_y > 0:
