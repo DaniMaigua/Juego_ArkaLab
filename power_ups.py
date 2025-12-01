@@ -1,4 +1,5 @@
 import pygame
+import random
 
 pygame.init
 
@@ -25,7 +26,22 @@ pygame.init
 
 # # 
 
-def aplicar_powerups(tipo, PALETA, velocidad_pelota_x, velocidad_pelota_y, color_pelota):
+
+# POWERUPS_POR_NIVEL = {  
+#     1: [None, "H", "C", "O", "Na"],
+#     2: [None, "Fe", "Ti", "He", "Ne"],
+#     3: [None, "Au", "Ag", "Pb", "Zn"],
+# }
+
+# def obtener_powerup(nivel_actual):
+#     #Devuelve un powerup aleatorio según el nivel actual
+#     powerups = POWERUPS_POR_NIVEL.get(nivel_actual, [None])
+#     return random.choice(powerups)
+
+
+
+
+def aplicar_powerups(tipo, PALETA, velocidad_pelota_x, velocidad_pelota_y, color_pelota):#nombre_imagen):
 
     if tipo == "H":
         velocidad_pelota_x *= 1.3 #Aumenta un poco la velocidad de la pelota
@@ -42,6 +58,7 @@ def aplicar_powerups(tipo, PALETA, velocidad_pelota_x, velocidad_pelota_y, color
         PALETA.width = max(int(PALETA.width * 0.5), 20) # Achica la paleta pero nunca a menos de 20 px
         color_pelota["valor"] = (0, 255, 0)   # Cambia a color verde
 
+    return velocidad_pelota_x, velocidad_pelota_y
     
 
 

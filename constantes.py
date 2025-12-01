@@ -7,7 +7,7 @@ ALTO = 750
 NOMBRE_JUEGO = "ArkaLab"
 
 # constante icono de la ventana
-ICONO = pygame.image.load("assets/logo.png") 
+ICONO = pygame.image.load("Assets/Intro/nombre_logo-38.png")
 
 # constantes personaje
 ANCHO_PERSONAJE = 50
@@ -30,9 +30,9 @@ ESPACIO = 7
 # constante de tamaño de palera
 ALTO_PALETA = 25
 LARGO_PALETA = 120
-# PALETA = pygame.Rect(100, 650, LARGO_PALETA, ALTO)
+# PALETA = pygame.Rect(100, 650, LARGO_PALETA, ALTO) -> NICO TIENE 100 YO 290 ver
 PALETA = pygame.Rect(290, 680, LARGO_PALETA, 25)
-VELOCIDAD_PALETA = 6
+VELOCIDAD_PALETA = 15
 
 # constante colores
 COLOR_PALETA = (100, 100, 200)
@@ -41,3 +41,22 @@ AZUL_MARINO = (0, 0, 128)
 
 # PRIMERO definimos caracteristicas de la pelota
 TAMANIO_PELOTA = 30
+
+FUENTE = None
+FUENTE_TITULO = None
+FUENTE_TEXTO = None
+
+
+# VARIABLES DEL JUEGO
+velocidad_pelota_x = 5
+velocidad_pelota_y = -5
+puntuacion_jugador = 0
+pelota_en_movimiento = False
+vidas = 3
+# # FUENTE = pygame.font.Font(None, 50)
+# FUENTE = None
+#ejes de movimiento de la pelota
+# velocidad_pelota_x = 5 * random.choice([1, -1]) #ESTE VALOR RANDOM = puede quedar en 5 o - 5 -> version NICO VER  
+pelota = pygame.Rect (PALETA.centerx - (TAMANIO_PELOTA // 2), PALETA.top - (TAMANIO_PELOTA + 5), TAMANIO_PELOTA, TAMANIO_PELOTA)
+color_pelota = {"valor": (100, 100, 200)}
+

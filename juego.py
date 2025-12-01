@@ -1,248 +1,245 @@
 import pygame # importamos la libreria. Primero la debemos instalar
 import random
-# import os
 
-# from menu import *
 from constantes import *
-
-# from bloques import pared_bloques
-
-# de este modo inicializamos pygame
-pygame.init()
+from power_ups import * #ver - creo que no importo nada puntual, porque bloques esta en bloques.py
+# from bloques import *
+import bloques as bloques_mod
 
 
-# ============================================================
+# # FUENTE = pygame.font.Font(None, 50)
+# FUENTE = None
+
+# pelota = pygame.Rect (PALETA.centerx - (TAMANIO_PELOTA // 2), PALETA.top - (TAMANIO_PELOTA + 5), TAMANIO_PELOTA, TAMANIO_PELOTA)
+# color_pelota = {"valor": (100, 100, 200)}
+
+
 # FUNCIÓN PRINCIPAL DEL JUEGO
-# ============================================================
 def iniciar_juego():
+    # de este modo inicializamos pygame
+    pygame.init()
 
-    # --------------------------
-    # VARIABLES DEL JUEGO
-    # --------------------------
-    velocidad_pelota_x = 5
-    velocidad_pelota_y = -5
-    puntuacion_jugador = 0
-    pelota_en_movimiento = False
-    vidas = 3
-
-    #IMPORTANTE: sin toda la logica de abajo se abrira y se cerrara rapidamente
+    global FUENTE, FUENTE_TITULO, FUENTE_TEXTO
+    FUENTE = pygame.font.Font(None, 50)
+    FUENTE_TITULO = pygame.font.Font("Assets/Fuente/BungeeInline-Regular.ttf", 70)
+    FUENTE_TEXTO = pygame.font.Font("Assets/Fuente/Oswald-Bold.ttf", 30)
+    #IMPORTANTE: sin toda la logica de abajo se abre y se cierra rapidamente
     ventana = pygame.display.set_mode((ANCHO, ALTO))
     pygame.display.set_caption("ArkaLab") # constante nombre de la ventana
 
-    fondo = pygame.image.load("Assets/Fondo/Fondo_pygame.png").convert()
+    nombre_icono = pygame.image.load('Assets/Intro/nombre_icono-37.png')
+    pygame.display.set_icon(nombre_icono)
 
-    # =================================================================================
-    # PARED BLOQUES
-    # =================================================================================
+    nivel_actual = 1                                
+    #iniciamos nivel
+    bloques_list, fondo = bloques_mod.crear_bloques(nivel_actual)    
+    # llamamos a crear_bloques para que sepa que nivel es
 
-    # Diccionario de bloques -> util para power ups
-    imagenes_bloques = {
-        "Na": pygame.image.load("Assets/Elementos/Celeste/celeste_alcalino_hidrogeno.png"),
-        "H": pygame.image.load("Assets/Elementos/Celeste/celeste_alcalino_sodio.png"),
-        "B": pygame.image.load("Assets/Elementos/Amarillo/amarillo_metaloide_boro-22.png"),
-        "Si": pygame.image.load("Assets/Elementos/Amarillo/amarillo_metaloide_silicio-23.png"),
-        "P": pygame.image.load("Assets/Elementos/Azul/azul_lantanido_fosforo-20.png"),
-        "Th": pygame.image.load("Assets/Elementos/Naranja/naranja_actinido_torio-14.png"),
-        "U": pygame.image.load("Assets/Elementos/Naranja/naranja_actinido_uranio-15.png"),
-        "He": pygame.image.load("Assets/Elementos/Rosa/rosa_gas_noble_helio-17.png"),
-        "Ne": pygame.image.load("Assets/Elementos/Rosa/rosa_gas_noble_neon-18.png"),
-        "Kr": pygame.image.load("Assets/Elementos/Rosa/rosa_gas_noble_kripton-19.png"),
-        "Ce": pygame.image.load("Assets/Elementos/Verde_Agua/verde_agua_nometal_cerio-16.png"),
-        "Cr": pygame.image.load("Assets/Elementos/Violeta/violeta_metal_transicional_cromo-11.png"),
-        "Fe": pygame.image.load("Assets/Elementos/Violeta/violeta_metal_transicional_hierro-12.png"),
-        "Mt": pygame.image.load("Assets/Elementos/Violeta/violeta_metal_transicional_meitnerio-13.png"),
-        "Ti": pygame.image.load("Assets/Elementos/Violeta/violeta_metal_transicional_titanio-10.png"),
-    }
-
-    imagenes_bloques = [
-        pygame.transform.scale(imagenes_bloques[img_key],(ANCHO_BLOQUE, ALTO_BLOQUE))
-        for img_key in imagenes_bloques
-    ]
-
-    bloques = []
-
-    # ------------------------------------------------------
-    # FUNCIÓN PARA CREAR LA MATRIZ DE BLOQUES
-    # ------------------------------------------------------
-    def crear_bloques():
-        bloques.clear()
-
-        ancho_matriz_bloques = COLUMNAS * (ANCHO_BLOQUE + ESPACIO) - ESPACIO
-        offset_x = (ANCHO - ancho_matriz_bloques) // 2 #centrarlo segun tamaño matriz
-        offset_y = 150  # BAJAR LOS BLOQUES
-
-        for fila in range(FILAS):
-            for col in range(COLUMNAS):
-                x = offset_x + col * (ANCHO_BLOQUE + ESPACIO)
-                y = offset_y + fila * (ALTO_BLOQUE + ESPACIO)
-
-                rect = pygame.Rect(x, y, ANCHO_BLOQUE, ALTO_BLOQUE)
-
-                # Imagen al azar (de las disponibles)
-                img = random.choice(imagenes_bloques)
-
-                #DICCIONARIO -> rectangulo e imagen
-                bloques.append({
-                    "rect": rect,
-                    "img": img
-                })
-
-    crear_bloques()
+    # ACA SE LLAMA AL LOOP PRINCIPAL
+    loop_principal(ventana, fondo, bloques_list, nivel_actual)
 
 
-    # =================================================================================
-    # PELOTA
-    # =================================================================================
 
-    # Tu comentario intacto
-    pelota = pygame.Rect (PALETA.centerx - (TAMANIO_PELOTA // 2), PALETA.top - (TAMANIO_PELOTA -5), TAMANIO_PELOTA, TAMANIO_PELOTA)
+# def reiniciar_juego(pelota,keys, vidas, puntuacion_jugador):
 
-    # =================================================================================
-    # PANTALLA
-    # =================================================================================
+#     if keys[pygame.K_SPACE]:
+#         vidas = 3
+#         puntuacion_jugador = 0
 
-    FUENTE = pygame.font.Font(None, 50)
+#         # pelota.x = (ANCHO // 2) - (TAMANIO_PELOTA // 2)
+#         # pelota.y = PALETA.top - TAMANIO_PELOTA - 5
+
+#         # Reubicar pelota siempre encima de la paleta antes de soltarla
+#         pelota.x = PALETA.centerx - TAMANIO_PELOTA // 2
+#         pelota.y = PALETA.top - TAMANIO_PELOTA - 5
+
+#         # bloques = crear_bloques()
+#         bloques, fondo = crear_bloques(nivel_actual)
+
+#         return vidas, puntuacion_jugador, bloques #solo retorna valores actualizados cuando retorno space
+
+#     return vidas, puntuacion_jugador, bloques
+
+
+def perder_vidas(vidas, pelota):
+    # Si la pelota pasó el borde inferior
+    if pelota.bottom >= ALTO:
+        vidas -= 1
+
+        # reiniciar paleta -> CENTRAR LA PALETA
+        PALETA.centerx = ANCHO // 2
+        PALETA.width = LARGO_PALETA
+
+        # Reiniciar pelota -> IMPORTANTE, COORDENADAS DE POSICION INICIAL DE PELOTA
+        pelota.x = PALETA.centerx - TAMANIO_PELOTA // 2
+        pelota.y = PALETA.top - TAMANIO_PELOTA - 5
+
+        # Detengo el movimiento
+        global pelota_en_movimiento
+        pelota_en_movimiento = False
+
+    return vidas
+
+
+def mostrar_pantalla_fin(ventana, mensaje, mensaje_secundario):
+    global vidas, puntuacion_jugador, pelota_en_movimiento, pelota
+
+    # Creamos textos
+    texto_principal = FUENTE_TITULO.render(f"{mensaje}", False, COLOR_PALETA)
+    texto_secundario = FUENTE_TEXTO.render(f"Presiona SPACE para {mensaje_secundario}", True, COLOR_PALETA)
+
+    rect_fondo = pygame.Surface((450, 150), pygame.SRCALPHA)
+    rect_fondo.fill((0, 0, 0, 200)) 
+
+    # bliteamos en pantalla 
+    ventana.blit(rect_fondo, (150,230))
+    ventana.blit(texto_principal, (160, 240))
+    ventana.blit(texto_secundario, (195, 315))
+
+    # ventana.blit(texto_principal, (ANCHO//2 - texto_principal.get_width()//2, ALTO//2 - 50))
+
+    pygame.display.flip()
+
+    # Esperar presionar tecla SPACE
+    esperando = True
+    while esperando:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                esperando = False
+
+        pygame.time.Clock().tick(60)
+
+    # Reiniciar valores del juego
+    vidas = 3
+    puntuacion_jugador = 0
+    # bloques, fondo = crear_bloques()
+    nivel_actual = 1
+    bloques_list, fondo = bloques_mod.crear_bloques(nivel_actual)
+
+    #POSICIONAR TAMBIEN PALETA EN EL CENTRO
+    PALETA.centerx = ANCHO // 2 #ver al pasar de nivel
+    PALETA.width =LARGO_PALETA
+    pelota.x = PALETA.centerx - TAMANIO_PELOTA // 2
+    pelota.y = PALETA.top - TAMANIO_PELOTA - 5
+
+    pelota_en_movimiento = False
+
+    return bloques_list, fondo, nivel_actual
+
+
+
+
+# BUCLE PRINCIPAL DEL JUEGO
+def loop_principal(ventana, fondo, bloques_list, nivel_actual):
+    global velocidad_pelota_x, velocidad_pelota_y
+    global puntuacion_jugador, pelota_en_movimiento, vidas
+    global pelota, color_pelota
     corriendo = True
+    # Posicionar la pelota al inicio del juego
+    pelota.x = PALETA.centerx - (TAMANIO_PELOTA // 2)
+    pelota.y = PALETA.top - (TAMANIO_PELOTA + 5)
+    #hacer funcion
 
+    pelota_en_movimiento = False
 
-    # ============================================================
-    # FUNCIÓN: PERDER VIDAS
-    # ============================================================
-    def reiniciar_juego():
-
-        if keys[pygame.K_SPACE]:
-            vidas = 3
-            puntuacion_jugador = 0
-            pelota.x = (ANCHO // 2) - (TAMANIO_PELOTA // 2)
-            pelota.y = 650 - (TAMANIO_PELOTA // 2)
-            crear_bloques()
-            return vidas, puntuacion_jugador
-        
-
-    def perder_vidas (vidas):# PERDER VIDA
-
-        FUENTE.render(f"Vidas: {vidas}", False, COLOR_PALETA)
-        if pelota.bottom >= ALTO:
-            vidas -= 1
-            # Reiniciar pelota -> IMPORTANTE, COORDENADAS DE POSICION INICIAL DE PELOTA
-            if vidas == 0:
-                FUENTE.render("Game Over", False, COLOR_PALETA)
-                reiniciar_juego()
-        return vidas
-    
-
-    def colisionar_pelota_bloque(bloques, velocidad_pelota_y, puntuacion_jugador):
-            for bloque in bloques[:]:
-                if pelota.colliderect(bloque["rect"]):
-                    bloques.remove(bloque)
-                    velocidad_pelota_y *= -1
-                    puntuacion_jugador += 5
-                    break
-            return puntuacion_jugador
-
-    # ============================================================
-    # BUCLE PRINCIPAL DEL JUEGO (TU PREGUNTA)
-    # Sí: este es EL WHILE PRINCIPAL
-    # ============================================================
     while corriendo:
-
-        # --------------------------
-        # EVENTOS
-        # --------------------------
+    # EVENTOS
         for event in pygame.event.get():
             if event.type == pygame.QUIT: #APRETAR LA X
                 corriendo = False
 
             if event.type == pygame.KEYDOWN: #presionar tecla
                 if event.key == pygame.K_SPACE and not pelota_en_movimiento:
-
-
-                        # Reubicar pelota siempre encima de la paleta antes de soltarla
+                    
+                    # Reubicar pelota siempre encima de la paleta antes de soltarla
                     pelota.x = PALETA.centerx - TAMANIO_PELOTA // 2
                     pelota.y = PALETA.top - TAMANIO_PELOTA - 5
+                    # PALETA.x = PALETA.centerx
+                    # - TAMANIO_PELOTA // -> ver si pone pelota en el centro
 
                     velocidad_pelota_x = random.choice([-5, 5])
                     velocidad_pelota_y = -5  # siempre hacia arriba
-
-                    # # ejes de movimiento de la pelota
-                    # velocidad_pelota_x = 5 #* random.choice([1, -1]) 
-                    # velocidad_pelota_y = -5
                     pelota_en_movimiento = True
-                    # pelota.x += velocidad_pelota_x * random.choice([-1])
-                    # pelota.y += velocidad_pelota_y * random.choice([1])
-
-            # if event.key == pygame.K_SPACE and not pelota_en_movimiento:
 
 
-    # pelota_en_movimiento = True
+        # Movimiento de paleta
+        keys = pygame.key.get_pressed() #mantener presionado
+
+        if (keys[pygame.K_d] or keys[pygame.K_RIGHT]) and PALETA.right < ANCHO:
+            PALETA.x += VELOCIDAD_PALETA
+
+        if (keys[pygame.K_a] or keys[pygame.K_LEFT]) and PALETA.left > 0:
+            PALETA.x -= VELOCIDAD_PALETA
 
 
-            # Movimiento de paleta
-            keys = pygame.key.get_pressed() #mantener presionado
-
-            if keys[pygame.K_d] and PALETA.right < ANCHO:
-                PALETA.x += VELOCIDAD_PALETA
-            if keys[pygame.K_a] and PALETA.left > 0:
-                PALETA.x -= VELOCIDAD_PALETA
-
-
-        # ============================================================
         # COLISIONES CON BORDES
-        # ============================================================
         if pelota.top <= 0:
-            velocidad_pelota_y *= -1
+            velocidad_pelota_y *= -1 #indica, si la pelota toca el top, que invierta el signo, de positivo a negativo
+
         if pelota.left <= 0 or pelota.right >= ANCHO:
-            velocidad_pelota_x *= - 1
+            velocidad_pelota_x *= - 1 #SOLO EN EJE X
 
-        # ============================================================
         # COLISIONES CON PALETA
-        # ============================================================
         if pelota.colliderect(PALETA):
-            velocidad_pelota_y *= -1
-            velocidad_pelota_x *= -1 #-> ver como funciona
+            # velocidad_pelota_y *= -1
+            velocidad_pelota_y = -abs(velocidad_pelota_y)
 
+            # velocidad_pelota_x *= -1 #-> ver como funciona
 
-        # ============================================================
-        # FUNCIÓN: REINICIAR JUEGO
-        # ============================================================
+        # PERDER VIDAS
+        vidas = perder_vidas(vidas, pelota)
 
-        vidas_disponibles = perder_vidas(vidas) #variable
-
-
-        # ============================================================
-        # FUNCIÓN: COLISIÓN PELOTA-BLOQUE
-        # ============================================================
+        if vidas <= 0:
+            vidas == 0
+            bloques_list, fondo, nivel_actual = mostrar_pantalla_fin(ventana, "GAME OVER","reiniciar")
         
-                
-        puntuacion_jugador = colisionar_pelota_bloque(bloques, velocidad_pelota_y, puntuacion_jugador)
+        if len(bloques_list) == 0:     
+            bloques_list, fondo, nivel_actual = mostrar_pantalla_fin(ventana, "GANASTE!", "continuar")
+            nivel_actual += 1
+            bloques_list, fondo = bloques_mod.crear_bloques(nivel_actual)
 
+        # PUNTUACION JUGADOR
+        # actualizar_powerups(ventana, powerups, PALETA, velocidad_pelota_x, velocidad_pelota_y)
+        (bloques_list,
+        velocidad_pelota_y,
+        velocidad_pelota_x,
+        puntuacion_jugador,
+        pelota,
+        color_pelota, fondo, nivel_actual) = bloques_mod.colisionar_pelota_bloque(
+        bloques_list,velocidad_pelota_y,velocidad_pelota_x,puntuacion_jugador,pelota,color_pelota,fondo, nivel_actual)
 
-        # ============================================================
+        # puntuacion_jugador = colisionar_pelota_bloque(bloques, velocidad_pelota_y, velocidad_pelota_x, puntuacion_jugador, pelota, color_pelota)
+
         # MOVIMIENTO DE LA PELOTA
-        # ============================================================
         if pelota_en_movimiento:
             pelota.x += velocidad_pelota_x
             pelota.y += velocidad_pelota_y
 
 
-        # ============================================================
         # DIBUJADO EN PANTALLA
-        # ============================================================
         ventana.blit(fondo, (0, 0))
 
+        #creacion del rectangulo (ubicacion, color, objeto -> un rectangulo)
         pygame.draw.rect(ventana,COLOR_PALETA, PALETA)
-        pygame.draw.ellipse(ventana, COLOR_PALETA, pelota)
+        pygame.draw.rect(ventana, (0, 0, 0), PALETA, 1) # Borde de la paleta
+        #LUEGO dibujamos la pelota
+        pygame.draw.ellipse(ventana, color_pelota["valor"], pelota)
+        pygame.draw.ellipse(ventana, (0, 0, 0), pelota, 1) # Borde de la pelota
 
-        for bloque in bloques:
+        for bloque in bloques_list:
             ventana.blit(bloque["img"], bloque["rect"])
 
-        puntuacion_texto = FUENTE.render(f"{puntuacion_jugador}", False, COLOR_PALETA)
-        ventana.blit(puntuacion_texto, (50,50))
-
-        vidas_texto = FUENTE.render(f"{vidas_disponibles}", False, COLOR_PALETA)
-        ventana.blit(vidas_texto, (500,50))
+        ventana.blit(FUENTE_TEXTO.render(f"{ puntuacion_jugador}", False, COLOR_PALETA), (50, 50))
+        ventana.blit(FUENTE.render(f"{ vidas}", False, COLOR_PALETA), (500, 50))
 
         pygame.display.flip()
         pygame.time.Clock().tick(60)
 
-    pygame.quit()
+pygame.quit()
+
+
+
