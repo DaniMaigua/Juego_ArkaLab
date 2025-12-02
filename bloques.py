@@ -5,7 +5,6 @@ from power_ups import aplicar_powerups
 
 # PARED BLOQUES
 
-
 imagenes_bloques = {
     "Na": pygame.image.load("Assets/Elementos/Celeste/celeste_alcalino_hidrogeno.png") ,
     "H": pygame.image.load("Assets/Elementos/Celeste/celeste_alcalino_sodio.png"),

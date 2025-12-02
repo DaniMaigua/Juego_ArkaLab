@@ -13,7 +13,6 @@ pygame.mixer.music.play(loops=-1)
 pygame.mixer.music.set_volume(0.3)
     
 
-#constantes convertir 
 VENTANA = pygame.display.set_mode((ANCHO,ALTO))
 pygame.display.set_caption("ARKALAB - Menú del Juego")
 
@@ -21,7 +20,7 @@ nombre_icono = pygame.image.load('Assets/Intro/nombre_icono-37.png')
 pygame.display.set_icon(nombre_icono)
 
 # Fuente
-fuente = pygame.font.Font(None,20)
+# fuente = pygame.font.Font(None,20)
 fondo_menu = pygame.image.load("Assets/Fondo/Fondo_intro.png").convert_alpha()
 
 logo = pygame.image.load("Assets/Intro/nombre_logo-38.png").convert_alpha()
@@ -30,7 +29,7 @@ eslogan = pygame.image.load("Assets/Intro/nombre_eslogan-39-39.png").convert_alp
 eslogan_scale = pygame.transform.scale(eslogan, (200, 30))
 
 # Cargar sonido
-sonido_tecla_intro = pygame.mixer.Sound("Assets/Sonidos/sonido_tecla_intro.mp3")
+sonido_tecla_intro = pygame.mixer.Sound("Assets/Sonidos/sonido_vida.mp3")
 
 imagenes_botones= {
 "img_jugar": pygame.image.load("Assets/Intro/Botones/boton_jugar-27.png").convert_alpha(),
@@ -50,24 +49,24 @@ imagenes_botones_inicio = {
 # Botones: texto, rectángulo, y estado de hover previo (para controlar el sonido)
 botones = [
     {"imagen": imagenes_botones_inicio ["img_jugar"],
-     "rect": pygame.Rect(300, 350, 120, 20),
-     "tecla_intro": False, 
-     "accion": "Jugar"},
+    "rect": pygame.Rect(300, 350, 120, 20),
+    "tecla_intro": False, 
+    "accion": "Jugar"},
 
-     {"imagen": imagenes_botones_inicio ["img_ranking"], 
-     "rect": pygame.Rect(300, 415, 120, 20),
-     "tecla_intro": False, 
-     "accion": "Ranking"},
+    {"imagen": imagenes_botones_inicio ["img_ranking"], 
+    "rect": pygame.Rect(300, 415, 120, 20),
+    "tecla_intro": False, 
+    "accion": "Ranking"},
 
-     {"imagen": imagenes_botones_inicio ["img_creditos"], 
-     "rect": pygame.Rect(300, 480, 120, 20),
-     "tecla_intro": False, 
-     "accion": "Créditos"},
+    {"imagen": imagenes_botones_inicio ["img_creditos"], 
+    "rect": pygame.Rect(300, 480, 120, 20),
+    "tecla_intro": False, 
+    "accion": "Créditos"},
 
-     {"imagen": imagenes_botones_inicio ["img_salir"], 
-     "rect": pygame.Rect(300, 545, 120, 20),
-     "tecla_intro": False, 
-     "accion": "Salir"}
+    {"imagen": imagenes_botones_inicio ["img_salir"], 
+    "rect": pygame.Rect(300, 545, 120, 20),
+    "tecla_intro": False, 
+    "accion": "Salir"}
 ]
 
 
@@ -89,16 +88,11 @@ def dibujar_menu():
             if not boton["tecla_intro"]:
                 sonido_tecla_intro.play()
                 boton["tecla_intro"] = True
-            # color = AZUL_CLARO
         else:
             boton["tecla_intro"] = False
-            # color = AZUL
 
-        # pygame.draw.rect(VENTANA, color, rect)
-
-        # texto = fuente.render(boton["texto"], True, AZUL_MARINO)
-        img = boton["imagen"]
         
+        img = boton["imagen"]
         #Crea un rectángulo del tamaño de la imagen y la centra en el botón.
         img_rect = boton["imagen"].get_rect(center=rect.center)
         # VENTANA.blit(texto,img_rect)
@@ -119,8 +113,8 @@ while corriendo:
                 if boton["rect"].collidepoint(pos):
                     if boton["accion"] == "Jugar":
                         print("Iniciando el juego...")
-                        corriendo = False        # Cerrar el menú
-                        iniciar_juego()          # Iniciar el juego
+                        corriendo = False        
+                        iniciar_juego()          
                     elif boton["accion"] == "Ranking":
                         print("Mostrando el ranking...")
                         corriendo = False

@@ -22,5 +22,33 @@
     {
         "nombre": "Prueba 5",
         "puntaje": 15
+    },
+    {
+        "nombre": "PRUEBA 6",
+        "puntaje": 25
+    },
+    {
+        "nombre": "Prueba 7",
+        "puntaje": 25
+    },
+    {
+        "nombre": "Prueba 8",
+        "puntaje": 30
+    },
+    {
+        "nombre": "Prueba 8",
+        "puntaje": 15
+    },
+    {
+        "nombre": "PRUEBA 9",
+        "puntaje": 15
+    },
+    {
+        "nombre": "PRUEBA 11",
+        "puntaje": 200
+    },
+    {
+        "nombre": "PRUEBA 12",
+        "puntaje": 75
     }
 ]

@@ -55,10 +55,9 @@ def ordenar_descendente(ranking):
 
 
 def mostrar_ranking(ventana, ancho, alto):
-    # fuente = pygame.font.Font(None, 40)
+
     FUENTE_TITULO = pygame.font.Font("Assets/Fuente/BungeeInline-Regular.ttf", 40)
     FUENTE_TEXTO = pygame.font.Font("Assets/Fuente/Oswald-SemiBold.ttf", 25)
-    # ranking = sorted(cargar_ranking(), key=lambda x: x["puntaje"], reverse=True)[:5]
     
     # Cargar ranking y ordenar con método burbuja
     ranking = cargar_ranking()
@@ -85,13 +84,12 @@ def mostrar_ranking(ventana, ancho, alto):
         
         if not ranking:
             ventana.blit(FUENTE_TEXTO.render("No hay puntajes", True, BLANCO), (ancho//2 - 100, 200))
-        
-        # ventana.blit(fuente.render("ESC para volver", True, BLANCO), (ancho//2 - 110, alto - 60))
+    
         ventana.blit(FUENTE_TEXTO.render("ESC para salir", True, AMARILLO), (ancho//2 - 80, alto - 230))
 
         pygame.display.flip()
 
-# def pedir_nombre(ventana, ancho, alto, puntaje):
+
 def pedir_nombre(ventana, ancho, puntaje):
     FUENTE_TITULO = pygame.font.Font("Assets/Fuente/BungeeInline-Regular.ttf", 40)
     FUENTE_TEXTO = pygame.font.Font("Assets/Fuente/Oswald-SemiBold.ttf", 25)
@@ -118,7 +116,7 @@ def pedir_nombre(ventana, ancho, puntaje):
         ventana.blit(FONDO_PUNTAJE, (0, 0))
 
         # Título
-        ventana.blit(FUENTE_TITULO.render("¡NUEVO PUNTAJE!", True, AMARILLO), (ancho//2 - 200, 100))
+        ventana.blit(FUENTE_TITULO.render("NUEVO PUNTAJE", True, AMARILLO), (ancho//2 - 200, 100))
 
         # Mostrar puntaje
         ventana.blit(FUENTE_TEXTO.render(f"Puntaje: {puntaje}", True, AMARILLO), (ancho//2 - 60, 200))

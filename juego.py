@@ -2,7 +2,7 @@ import pygame # importamos la libreria. Primero la debemos instalar
 import random
 
 from config import *
-from power_ups import * #ver - creo que no importo nada puntual, porque bloques esta en bloques.py
+from power_ups import aplicar_powerups, obtener_powerup_por_nivel
 from ranking import pedir_nombre
 
 import bloques as bloques_mod
@@ -15,7 +15,7 @@ def iniciar_juego():
 
     pygame.mixer.init()
     pygame.mixer.music.load("Assets/Sonidos/sonido_juego.mp3")
-    pygame.mixer.music.play(loops=-1)
+    pygame.mixer.music.play(-1)
     pygame.mixer.music.set_volume(0.3)
 
     global FUENTE, FUENTE_TITULO, FUENTE_TEXTO
@@ -33,6 +33,7 @@ def iniciar_juego():
     #iniciamos nivel
     bloques_list, fondo = bloques_mod.crear_bloques(nivel_actual)    
     # llamamos a crear_bloques para que sepa que nivel es
+    powerups = obtener_powerup_por_nivel(nivel_actual)  #Llamamos a la funcion que indica 
 
     # ACA SE LLAMA AL LOOP PRINCIPAL
     loop_principal(ventana, fondo, bloques_list, nivel_actual)
@@ -73,8 +74,6 @@ def mostrar_pantalla_fin(ventana, mensaje, mensaje_secundario):
     ventana.blit(rect_fondo, (150,230))
     ventana.blit(texto_principal, (160, 240))
     ventana.blit(texto_secundario, (195, 315))
-
-    # ventana.blit(texto_principal, (ANCHO//2 - texto_principal.get_width()//2, ALTO//2 - 50))
 
     pygame.display.flip()
 
@@ -166,8 +165,6 @@ def loop_principal(ventana, fondo, bloques_list, nivel_actual):
                     # Reubicar pelota siempre encima de la paleta antes de soltarla
                     pelota.x = PALETA.centerx - TAMANIO_PELOTA // 2
                     pelota.y = PALETA.top - TAMANIO_PELOTA - 5
-                    # PALETA.x = PALETA.centerx
-                    # - TAMANIO_PELOTA // -> ver si pone pelota en el centro
 
                     velocidad_pelota_x = random.choice([-5, 5])
                     velocidad_pelota_y = -5  # siempre hacia arriba
@@ -193,20 +190,14 @@ def loop_principal(ventana, fondo, bloques_list, nivel_actual):
 
         # COLISIONES CON PALETA
         if pelota.colliderect(PALETA):
-            # velocidad_pelota_y *= -1
             velocidad_pelota_y = -abs(velocidad_pelota_y)
-
-            # velocidad_pelota_x *= -1 #-> ver como funciona
 
         # PERDER VIDAS
         vidas = perder_vidas(vidas, pelota)
 
         if vidas <= 0:
-            # vidas = 0 #ver porque no figura en cero
-           
             pedir_nombre(ventana, ANCHO, puntuacion_jugador)
             bloques_list, fondo, nivel_actual = mostrar_pantalla_fin(ventana, "GAME OVER","reiniciar")
-            # return  # Volver al menú
         
         if len(bloques_list) == 0:   
             pedir_nombre(ventana, ANCHO, puntuacion_jugador)  
@@ -246,8 +237,8 @@ def loop_principal(ventana, fondo, bloques_list, nivel_actual):
         for bloque in bloques_list:
             ventana.blit(bloque["img"], bloque["rect"])
 
-        ventana.blit(FUENTE_TEXTO.render(f"SCORE {puntuacion_jugador}", False, COLOR_PALETA), (50, 50))
-        ventana.blit(FUENTE_TEXTO.render(f"Vidas:{vidas}", False, BLANCO), (500, 50))
+        ventana.blit(FUENTE_TEXTO.render(f"SCORE {puntuacion_jugador}", False, BLANCO), (50, 50))
+        ventana.blit(FUENTE_TEXTO.render(f"VIDAS {vidas}", False, BLANCO), (500, 50))
 
         pygame.display.flip()
         pygame.time.Clock().tick(60)
