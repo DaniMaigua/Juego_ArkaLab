@@ -1,10 +1,10 @@
 import pygame
 
-from constantes import *
+from config import *
 from juego import iniciar_juego
-# from ranking import iniciar_ranking
+from ranking import mostrar_ranking
+from creditos import mostrar_creditos
 
-# import bloques
 
 pygame.init()
 pygame.mixer.init()
@@ -14,8 +14,8 @@ pygame.mixer.music.set_volume(0.3)
     
 
 #constantes convertir 
-ventana = pygame.display.set_mode((ANCHO,ALTO))
-pygame.display.set_caption("Menú del Juego")
+VENTANA = pygame.display.set_mode((ANCHO,ALTO))
+pygame.display.set_caption("ARKALAB - Menú del Juego")
 
 nombre_icono = pygame.image.load('Assets/Intro/nombre_icono-37.png')
 pygame.display.set_icon(nombre_icono)
@@ -76,9 +76,9 @@ corriendo = True
 
 def dibujar_menu():
 
-    ventana.blit(fondo_menu, (0, 0))
-    ventana.blit(logo_scale, (150, 150))
-    ventana.blit(eslogan_scale, (260, 280))
+    VENTANA.blit(fondo_menu, (0, 0))
+    VENTANA.blit(logo_scale, (150, 150))
+    VENTANA.blit(eslogan_scale, (260, 280))
     mouse_pos = pygame.mouse.get_pos()
 
     for boton in botones:
@@ -94,15 +94,15 @@ def dibujar_menu():
             boton["tecla_intro"] = False
             # color = AZUL
 
-        # pygame.draw.rect(ventana, color, rect)
+        # pygame.draw.rect(VENTANA, color, rect)
 
         # texto = fuente.render(boton["texto"], True, AZUL_MARINO)
         img = boton["imagen"]
         
         #Crea un rectángulo del tamaño de la imagen y la centra en el botón.
         img_rect = boton["imagen"].get_rect(center=rect.center)
-        # ventana.blit(texto,img_rect)
-        ventana.blit(img,img_rect)
+        # VENTANA.blit(texto,img_rect)
+        VENTANA.blit(img,img_rect)
         
     pygame.display.update()
 
@@ -124,9 +124,11 @@ while corriendo:
                     elif boton["accion"] == "Ranking":
                         print("Mostrando el ranking...")
                         corriendo = False
-                        # iniciar_ranking()
+                        mostrar_ranking(VENTANA, ANCHO, ALTO)
                     elif boton["accion"] == "Créditos":
                         print("Mostrando los créditos...")
+                        corriendo = False
+                        mostrar_creditos()
                     elif boton["accion"] == "Salir":
                         corriendo = False
 

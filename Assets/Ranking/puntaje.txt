@@ -1,0 +1,26 @@
+[
+    {
+        "nombre": " PRU",
+        "puntaje": 0
+    },
+    {
+        "nombre": "Prueba 1",
+        "puntaje": 0
+    },
+    {
+        "nombre": "Prueba 2",
+        "puntaje": 65
+    },
+    {
+        "nombre": "Prueba 3",
+        "puntaje": 200
+    },
+    {
+        "nombre": "Prueba 4",
+        "puntaje": 25
+    },
+    {
+        "nombre": "Prueba 5",
+        "puntaje": 15
+    }
+]

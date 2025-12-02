@@ -1,18 +1,11 @@
 import pygame # importamos la libreria. Primero la debemos instalar
 import random
 
-from constantes import *
+from config import *
 from power_ups import * #ver - creo que no importo nada puntual, porque bloques esta en bloques.py
-# from bloques import *
+from ranking import pedir_nombre
+
 import bloques as bloques_mod
-
-
-
-# # FUENTE = pygame.font.Font(None, 50)
-# FUENTE = None
-
-# pelota = pygame.Rect (PALETA.centerx - (TAMANIO_PELOTA // 2), PALETA.top - (TAMANIO_PELOTA + 5), TAMANIO_PELOTA, TAMANIO_PELOTA)
-# color_pelota = {"valor": (100, 100, 200)}
 
 
 # FUNCIÓN PRINCIPAL DEL JUEGO
@@ -29,7 +22,7 @@ def iniciar_juego():
     FUENTE = pygame.font.Font(None, 50)
     FUENTE_TITULO = pygame.font.Font("Assets/Fuente/BungeeInline-Regular.ttf", 70)
     FUENTE_TEXTO = pygame.font.Font("Assets/Fuente/Oswald-Bold.ttf", 30)
-    #IMPORTANTE: sin toda la logica de abajo se abre y se cierra rapidamente
+    # IMPORTANTE: sin toda la logica de abajo se abre y se cierra rapidamente
     ventana = pygame.display.set_mode((ANCHO, ALTO))
     pygame.display.set_caption("ArkaLab") # constante nombre de la ventana
 
@@ -44,27 +37,6 @@ def iniciar_juego():
     # ACA SE LLAMA AL LOOP PRINCIPAL
     loop_principal(ventana, fondo, bloques_list, nivel_actual)
 
-
-
-# def reiniciar_juego(pelota,keys, vidas, puntuacion_jugador):
-
-#     if keys[pygame.K_SPACE]:
-#         vidas = 3
-#         puntuacion_jugador = 0
-
-#         # pelota.x = (ANCHO // 2) - (TAMANIO_PELOTA // 2)
-#         # pelota.y = PALETA.top - TAMANIO_PELOTA - 5
-
-#         # Reubicar pelota siempre encima de la paleta antes de soltarla
-#         pelota.x = PALETA.centerx - TAMANIO_PELOTA // 2
-#         pelota.y = PALETA.top - TAMANIO_PELOTA - 5
-
-#         # bloques = crear_bloques()
-#         bloques, fondo = crear_bloques(nivel_actual)
-
-#         return vidas, puntuacion_jugador, bloques #solo retorna valores actualizados cuando retorno space
-
-#     return vidas, puntuacion_jugador, bloques
 
 
 def perder_vidas(vidas, pelota):
@@ -138,6 +110,36 @@ def mostrar_pantalla_fin(ventana, mensaje, mensaje_secundario):
 
 
 
+# FUNCIÓN PARA IDENTIFICAR COLISION DE PELOTAS Y ACTIVAR POWERUPS
+def colisionar_pelota_bloque(bloques, velocidad_pelota_y, velocidad_pelota_x, puntuacion_jugador, pelota, color_pelota, fondo, nivel_actual):
+    for bloque in bloques[:]:
+        if pelota.colliderect(bloque["rect"]):
+            sonido_colision = pygame.mixer.Sound("Assets/Sonidos/sonido_colision_bloque2.mp3")
+            sonido_colision.set_volume(0.5)  # opcional
+            sonido_colision.play()
+            bloques.remove(bloque)
+
+            if bloque["powerup"] is not None:
+                aplicar_powerups(bloque["powerup"], PALETA, velocidad_pelota_x, velocidad_pelota_y, color_pelota)  #Activa el powerup aleatoriamente al colisionar
+            if abs(pelota.bottom -bloque["rect"].top) < 10 and velocidad_pelota_y > 0:
+                velocidad_pelota_y *= -1
+            elif abs(pelota.top -bloque["rect"].bottom) < 10 and velocidad_pelota_y < 0:    # funcion Abs para que rebote mas dinamicamente
+                velocidad_pelota_y *= -1
+            elif abs(pelota.right - bloque["rect"].left) < 10 and velocidad_pelota_x > 0:
+                velocidad_pelota_x *= -1
+            elif abs(pelota.left - bloque["rect"].right) < 10 and velocidad_pelota_x < 0:
+                velocidad_pelota_x *= -1
+            else:
+                velocidad_pelota_x *= -1    #En caso de que no se pueda detectar cual es el punto de colision, vuelve en sentido contrario
+                velocidad_pelota_y *= -1
+
+            puntuacion_jugador += 5
+            break
+
+    return bloques, velocidad_pelota_y, velocidad_pelota_x, puntuacion_jugador, pelota, color_pelota, fondo, nivel_actual
+# retornamos todo porque sirve para alimentar nuevamente a la funcion colisionar con el nuevo nivel
+
+
 
 # BUCLE PRINCIPAL DEL JUEGO
 def loop_principal(ventana, fondo, bloques_list, nivel_actual):
@@ -200,13 +202,18 @@ def loop_principal(ventana, fondo, bloques_list, nivel_actual):
         vidas = perder_vidas(vidas, pelota)
 
         if vidas <= 0:
-            vidas == 0
+            # vidas = 0 #ver porque no figura en cero
+           
+            pedir_nombre(ventana, ANCHO, puntuacion_jugador)
             bloques_list, fondo, nivel_actual = mostrar_pantalla_fin(ventana, "GAME OVER","reiniciar")
+            # return  # Volver al menú
         
-        if len(bloques_list) == 0:     
+        if len(bloques_list) == 0:   
+            pedir_nombre(ventana, ANCHO, puntuacion_jugador)  
             bloques_list, fondo, nivel_actual = mostrar_pantalla_fin(ventana, "GANASTE!", "continuar")
             nivel_actual += 1
             bloques_list, fondo = bloques_mod.crear_bloques(nivel_actual)
+            
 
         # PUNTUACION JUGADOR
         # actualizar_powerups(ventana, powerups, PALETA, velocidad_pelota_x, velocidad_pelota_y)
@@ -215,7 +222,7 @@ def loop_principal(ventana, fondo, bloques_list, nivel_actual):
         velocidad_pelota_x,
         puntuacion_jugador,
         pelota,
-        color_pelota, fondo, nivel_actual) = bloques_mod.colisionar_pelota_bloque(
+        color_pelota, fondo, nivel_actual) = colisionar_pelota_bloque(
         bloques_list,velocidad_pelota_y,velocidad_pelota_x,puntuacion_jugador,pelota,color_pelota,fondo, nivel_actual)
 
         # puntuacion_jugador = colisionar_pelota_bloque(bloques, velocidad_pelota_y, velocidad_pelota_x, puntuacion_jugador, pelota, color_pelota)
@@ -239,8 +246,8 @@ def loop_principal(ventana, fondo, bloques_list, nivel_actual):
         for bloque in bloques_list:
             ventana.blit(bloque["img"], bloque["rect"])
 
-        ventana.blit(FUENTE_TEXTO.render(f"{ puntuacion_jugador}", False, COLOR_PALETA), (50, 50))
-        ventana.blit(FUENTE.render(f"{ vidas}", False, COLOR_PALETA), (500, 50))
+        ventana.blit(FUENTE_TEXTO.render(f"SCORE {puntuacion_jugador}", False, COLOR_PALETA), (50, 50))
+        ventana.blit(FUENTE_TEXTO.render(f"Vidas:{vidas}", False, BLANCO), (500, 50))
 
         pygame.display.flip()
         pygame.time.Clock().tick(60)

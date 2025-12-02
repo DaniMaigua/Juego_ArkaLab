@@ -3,6 +3,11 @@ import pygame
 ANCHO = 700
 ALTO = 750
 
+#colores
+AMARILLO = (255, 255, 0)
+ROJO = (255, 0, 0)
+BLANCO = (255, 255, 255)
+    
 # constante nombre de la ventana
 NOMBRE_JUEGO = "ArkaLab"
 
@@ -17,6 +22,8 @@ COLOR_PERSONAJE = (255, 255, 0)
 
 # carpeta donde estan los bloques elementos
 RUTA_IMAGENES_ELEMENTOS = "Assets/Elementos"  
+
+RUTA_RANKING_TXT = "Assets/Ranking/puntaje.txt"
 
 # contantes de tamaño de bloque
 ANCHO_BLOQUE = 60
@@ -46,6 +53,10 @@ FUENTE = None
 FUENTE_TITULO = None
 FUENTE_TEXTO = None
 
+# FUENTE = pygame.font.Font(None, 50)
+# FUENTE_TITULO = pygame.font.Font("Assets/Fuente/BungeeInline-Regular.ttf", 70)
+# # FUENTE_TEXTO = pygame.font.Font("Assets/Fuente/Oswald-Bold.ttf", 30)
+
 
 # VARIABLES DEL JUEGO
 velocidad_pelota_x = 5
@@ -53,6 +64,15 @@ velocidad_pelota_y = -5
 puntuacion_jugador = 0
 pelota_en_movimiento = False
 vidas = 3
+
+
+
+
+# vidas_iconos = [
+# {"vida1":  pygame.image.load("") },
+# {"vida2": },
+# {"vida3": }
+# ]
 # # FUENTE = pygame.font.Font(None, 50)
 # FUENTE = None
 #ejes de movimiento de la pelota
