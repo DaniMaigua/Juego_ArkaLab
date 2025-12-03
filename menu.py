@@ -19,8 +19,6 @@ pygame.display.set_caption("ARKALAB - Menú del Juego")
 nombre_icono = pygame.image.load('Assets/Intro/nombre_icono-37.png')
 pygame.display.set_icon(nombre_icono)
 
-# Fuente
-# fuente = pygame.font.Font(None,20)
 fondo_menu = pygame.image.load("Assets/Fondo/Fondo_intro.png").convert_alpha()
 
 logo = pygame.image.load("Assets/Intro/nombre_logo-38.png").convert_alpha()
@@ -95,7 +93,7 @@ def dibujar_menu():
         img = boton["imagen"]
         #Crea un rectángulo del tamaño de la imagen y la centra en el botón.
         img_rect = boton["imagen"].get_rect(center=rect.center)
-        # VENTANA.blit(texto,img_rect)
+
         VENTANA.blit(img,img_rect)
         
     pygame.display.update()
