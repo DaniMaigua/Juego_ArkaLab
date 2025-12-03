@@ -1,7 +1,7 @@
 import pygame
 import random
 from config import *
-from power_ups import aplicar_powerups
+from power_ups import elegir_powerup
 
 # PARED BLOQUES
 
@@ -34,7 +34,6 @@ bloques = []
 def crear_bloques(nivel_actual, columnas = 8, filas = 5):
     bloques.clear()
 
-    # ancho_matriz_bloques = COLUMNAS * (ANCHO_BLOQUE + ESPACIO) - ESPACIO
     ancho_matriz_bloques = columnas * (ANCHO_BLOQUE + ESPACIO) - ESPACIO
     offset_x = (ANCHO - ancho_matriz_bloques) // 2 #centrarlo segun tamaño matriz
     offset_y = 150  # BAJAR LOS BLOQUES
@@ -72,10 +71,10 @@ def crear_bloques(nivel_actual, columnas = 8, filas = 5):
             bloques.append({
             "rect": rect,
             "img": img,
-            "powerup": random.choice([None, "H", "C", "O", "Na"]) 
+
+            "powerup": elegir_powerup(nivel_actual) # Llamamos a la funcion de sorteo de powerups
             #falta sumar los nuevos powerups del nivel 2 y 3
         })
     fondo = pygame.image.load(f"Assets/Fondo/fondo_nivel{nivel_actual}.png")    
-    #fondo ahora es una variable, recibe la ruta y cambia segun el nivel actual.
     return bloques, fondo
             

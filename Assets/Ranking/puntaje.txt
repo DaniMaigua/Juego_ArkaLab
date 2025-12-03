@@ -2,5 +2,9 @@
     {
         "nombre": "Dani 5",
         "puntaje": 15
+    },
+    {
+        "nombre": "Dani 6",
+        "puntaje": 25
     }
 ]

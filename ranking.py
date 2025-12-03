@@ -1,10 +1,8 @@
 import pygame
 import json
+import os
 from config import *
 
-import os
-
-VENTANA = pygame.display.set_mode((ANCHO, ALTO))
 
 #ranking
 def cargar_ranking():
@@ -123,8 +121,6 @@ def pedir_nombre(ventana, ancho, puntaje):
         
         # Instrucción
         ventana.blit(FUENTE_TEXTO.render("Ingresa tu nombre:", True, BLANCO), (ancho//2 - 80, 250))
-        # ventana.blit(FUENTE_TEXTO.render(nombre + "_", True, AMARILLO), (ancho//2 - 100, 320))
-
 
         # Cuadro de texto con el nombre
         pygame.draw.rect(ventana, BLANCO, (ancho//2 - 200, 320, 400, 60), 3)

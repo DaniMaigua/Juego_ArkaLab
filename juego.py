@@ -1,9 +1,9 @@
-import pygame # importamos la libreria. Primero la debemos instalar
+import pygame
 import random
 
 from config import *
 from power_ups import aplicar_powerups, obtener_powerup_por_nivel
-from ranking import pedir_nombre
+from ranking import pedir_nombre, mostrar_ranking
 
 import bloques as bloques_mod
 
@@ -93,7 +93,7 @@ def mostrar_pantalla_fin(ventana, mensaje, mensaje_secundario):
     # Reiniciar valores del juego
     vidas = 3
     puntuacion_jugador = 0
-    # bloques, fondo = crear_bloques()
+
     nivel_actual = 1
     bloques_list, fondo = bloques_mod.crear_bloques(nivel_actual)
 
@@ -142,14 +142,12 @@ def colisionar_pelota_bloque(bloques, velocidad_pelota_y, velocidad_pelota_x, pu
 
 # BUCLE PRINCIPAL DEL JUEGO
 def loop_principal(ventana, fondo, bloques_list, nivel_actual):
-    global velocidad_pelota_x, velocidad_pelota_y
-    global puntuacion_jugador, pelota_en_movimiento, vidas
-    global pelota, color_pelota
+    global velocidad_pelota_x, velocidad_pelota_y, puntuacion_jugador, pelota_en_movimiento, vidas, pelota, color_pelota
+
     corriendo = True
     # Posicionar la pelota al inicio del juego
     pelota.x = PALETA.centerx - (TAMANIO_PELOTA // 2)
     pelota.y = PALETA.top - (TAMANIO_PELOTA + 5)
-    #hacer funcion
 
     pelota_en_movimiento = False
 
@@ -201,13 +199,13 @@ def loop_principal(ventana, fondo, bloques_list, nivel_actual):
         
         if len(bloques_list) == 0:   
             pedir_nombre(ventana, ANCHO, puntuacion_jugador)  
+            mostrar_ranking(ventana, ANCHO, ALTO)
             bloques_list, fondo, nivel_actual = mostrar_pantalla_fin(ventana, "GANASTE!", "continuar")
             nivel_actual += 1
             bloques_list, fondo = bloques_mod.crear_bloques(nivel_actual)
             
 
         # PUNTUACION JUGADOR
-        # actualizar_powerups(ventana, powerups, PALETA, velocidad_pelota_x, velocidad_pelota_y)
         (bloques_list,
         velocidad_pelota_y,
         velocidad_pelota_x,
@@ -216,7 +214,6 @@ def loop_principal(ventana, fondo, bloques_list, nivel_actual):
         color_pelota, fondo, nivel_actual) = colisionar_pelota_bloque(
         bloques_list,velocidad_pelota_y,velocidad_pelota_x,puntuacion_jugador,pelota,color_pelota,fondo, nivel_actual)
 
-        # puntuacion_jugador = colisionar_pelota_bloque(bloques, velocidad_pelota_y, velocidad_pelota_x, puntuacion_jugador, pelota, color_pelota)
 
         # MOVIMIENTO DE LA PELOTA
         if pelota_en_movimiento:

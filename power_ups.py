@@ -3,6 +3,7 @@ import random
 
 pygame.init
 
+
 TODOS_LOS_POWERUPS = ["H", "C", "O", "Na", "Fe", "Ti", "He", "Ne"] # Lista con todos los powerups
 
 
@@ -14,7 +15,6 @@ def obtener_powerup_por_nivel(nivel_actual):
 def elegir_powerup(nivel_actual): #Funcion para appendear en la creacion de bloques
     powerups = obtener_powerup_por_nivel(nivel_actual) # Esta funcion toma cuantos powerups tenemos disponibles, y de ahi sortea cuales ingresar en los bloques de ese nivel
     return random.choice(powerups)
-
 
 
 

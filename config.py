@@ -7,7 +7,7 @@ ALTO = 750
 AMARILLO = (255, 255, 0)
 ROJO = (255, 0, 0)
 BLANCO = (255, 255, 255)
-    
+
 # constante nombre de la ventana
 NOMBRE_JUEGO = "ArkaLab"
 
@@ -17,7 +17,7 @@ ICONO = pygame.image.load("Assets/Intro/nombre_logo-38.png")
 
 # carpeta donde estan los bloques elementos
 RUTA_IMAGENES_ELEMENTOS = "Assets/Elementos"  
-RUTA_RANKING_TXT = "Assets/Ranking/puntaje.txt"
+RUTA_RANKING_TXT = "Assets/Ranking/puntaje.json"
 
 # contantes de tamaño de bloque
 ANCHO_BLOQUE = 60
